@@ -4,6 +4,7 @@ const typeDefs = `
     email: String!
     password: String!
     savedBooks: [Book]
+    bookCount: Int
   }
   
   type Book {
@@ -26,9 +27,9 @@ const typeDefs = `
 
   # Important for useMutation: We define our Mutation type to inform our entrypoints
   type Mutation {
-    saveBook(username: String, bookId: String!, title: String, description: String, authors: [String], image: String, link: String): Book
+    saveBook(username: String!, bookId: String!, title: String, description: String, authors: [String], image: String): User
     addUser(username: String!, email: String!, password:String!): User
-    removeBook(username: String!, bookId: String!): Book
+    removeBook(username: String!, bookId: String!): User
   }
 `;
 
