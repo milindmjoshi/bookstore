@@ -1,4 +1,6 @@
 const { User, Book } = require('../models');
+const { signToken, AuthenticationError } = require('../utils/auth');
+
 
 const resolvers = {
   // Important for useQuery: The resolver matches the typeDefs entry point and informs the request of the relevant data
@@ -18,7 +20,25 @@ const resolvers = {
   // Important for useMutation: The resolver matches the typeDefs entry point and informs the request of the relevant data
   Mutation: {
     addUser: async (parent, { username, email, password }) => {
-      return User.create({ username, email, password });
+      const user = User.create({ username, email, password });
+      const token = signToken(user);
+      return {token, user}
+    },
+    login: async (parent, { email, password }) => {
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        throw AuthenticationError
+      }
+
+      const correctPw = await user.isCorrectPassword(password);
+
+      if (!correctPw) {
+        throw AuthenticationError
+      }
+
+      const token = signToken(user);
+      return { token, user };
     },
     saveBook: async (parent, { username, bookId, title, description, authors, image }) => {
       return User.findOneAndUpdate(

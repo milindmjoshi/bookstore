@@ -15,6 +15,11 @@ const typeDefs = `
     title: String!
   }
 
+  type Auth {
+    token: String!
+    user: User
+  }
+
 
  
   # Important for useQuery: We define our Query type to inform our entry points
@@ -27,8 +32,9 @@ const typeDefs = `
 
   # Important for useMutation: We define our Mutation type to inform our entrypoints
   type Mutation {
+    login ( email: String!, password:String!): Auth
     saveBook(username: String!, bookId: String!, title: String, description: String, authors: [String], image: String): User
-    addUser(username: String!, email: String!, password:String!): User
+    addUser(username: String!, email: String!, password:String!): Auth
     removeBook(username: String!, bookId: String!): User
   }
 `;

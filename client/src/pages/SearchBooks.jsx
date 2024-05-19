@@ -1,4 +1,10 @@
 import { useState, useEffect } from 'react';
+// Import useMutation hook
+import {useMutation} from '@apollo/client';
+
+import { SAVE_BOOK } from '../../utils/mutations';
+
+
 import {
   Container,
   Col,
@@ -9,7 +15,8 @@ import {
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
+//import { saveBook, searchGoogleBooks } from '../utils/API';
+import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 const SearchBooks = () => {
@@ -59,6 +66,11 @@ const SearchBooks = () => {
     }
   };
 
+  // Important for useMutation: We pass the mutation we'd like to execute to the useMutation hook
+  // The useMutation hook returns an array. The function at index 0 can be dispatched within the component to trigger the mutation query
+  // The object at index 1 contains information, such as the error boolean, which we use in this application
+  const [saveBook, { error }] = useMutation(SAVE_BOOK);
+
   // create function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
@@ -72,11 +84,13 @@ const SearchBooks = () => {
     }
 
     try {
-      const response = await saveBook(bookToSave, token);
+      //const response = await saveBook(bookToSave, token);
+      // Pass variables to mutation as vairables object
+      const {data} = await saveBook({
+        variables: {bookToSave}
+      })
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      console.log(data);
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
@@ -108,6 +122,11 @@ const SearchBooks = () => {
                 </Button>
               </Col>
             </Row>
+            {error && (
+          <div className="col-12 my-3 bg-danger text-white p-3">
+            Something went wrong...
+          </div>
+        )}
           </Form>
         </Container>
       </div>
