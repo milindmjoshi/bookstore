@@ -20,11 +20,11 @@ const resolvers = {
     addUser: async (parent, { username, email, password }) => {
       return User.create({ username, email, password });
     },
-    saveBook: async (parent, { username, book }) => {
+    saveBook: async (parent, { username, bookId, title, description, authors, image }) => {
       return User.findOneAndUpdate(
         { username: username },
         {
-          $addToSet: { savedBooks: book },
+          $addToSet: { savedBooks: {bookId, title, description, authors,image} },
         },
         {
           new: true,
