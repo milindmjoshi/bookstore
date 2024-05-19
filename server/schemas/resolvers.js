@@ -9,6 +9,12 @@ const resolvers = {
       return User.find();
     },
 
+    me: async(parent, args, context)=>{
+      if (context.user){
+        return User.findOne({username: context.username})
+      }
+      throw AuthenticationError;
+    },
 
     // Important for Query Variables: Each query resolver function can accept up to four parameters.
     // The second parameter, commonly referred to as "args," represents the variable argument values passed with the query.
@@ -16,6 +22,8 @@ const resolvers = {
     user: async (parent, { username }) => {
       return User.findOne({ username: username });
     },
+
+    
   },
   // Important for useMutation: The resolver matches the typeDefs entry point and informs the request of the relevant data
   Mutation: {

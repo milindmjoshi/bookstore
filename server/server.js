@@ -3,6 +3,7 @@ const {ApolloServer} = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
 const path = require('path');
 const db = require('./config/connection');
+const { authMiddleware } = require('./utils/auth');
 // const routes = require('./routes');
 const { typeDefs, resolvers } = require('./schemas');
 
@@ -15,14 +16,19 @@ const server = new ApolloServer({
 });
 console.log("Apollo server created");
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+
+
 
 const startApolloServer = async () => {
   await server.start();
   console.log("Apollo server started");
-  // app.use(express.urlencoded({ extended: false }));
-  // app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+  app.use(express.json());
+  app.use('/graphql', expressMiddleware(server, {
+    context: authMiddleware
+  }));
   
   // Important for MERN Setup: When our application runs from production, it functions slightly differently than in development
   // In development, we run two servers concurrently that work together

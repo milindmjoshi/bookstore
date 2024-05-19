@@ -28,6 +28,7 @@ const typeDefs = `
     users: [User]!
     # Important for Query Variables: The profile query field allows us to fetch the specific Profile data by using the profileId argument and providing a non-null ID value as the argument value
     user(username: String!): User
+    me: User
   }
 
   # Important for useMutation: We define our Mutation type to inform our entrypoints
