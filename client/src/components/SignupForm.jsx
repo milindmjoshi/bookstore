@@ -38,15 +38,15 @@ const SignupForm = () => {
 
    
     try {
-      const {data} = await addUser(userFormData);
-      console.log(data);
-
-       
-      console.log(data.user);
-      console.log(data.token);
-      Auth.login(data.token);
+      const {data} = await addUser({
+        variables: {username: userFormData.username, email: userFormData.email, password: userFormData.password }
+      });
+      console.log(JSON.stringify(data));
+      console.log(data.addUser.token);
+      Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
+      console.log("Error details:" + JSON.stringify(err, null, 2));
       setShowAlert(true);
     }
 
