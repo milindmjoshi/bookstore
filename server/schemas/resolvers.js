@@ -10,6 +10,7 @@ const resolvers = {
     },
 
     me: async(parent, args, context)=>{
+      // PROBLEM is HERE when trying to get context
       console.log("In get me: " );
       if (context.user){
         console.log("In get me, for user: " + context.user.username);

@@ -17,11 +17,17 @@ export const QUERY_USER = gql`
 `;
 
 export const GET_ME = gql`
-  query me {
+  query getMe {
     me {
       username
       email
-      password
+      savedBooks {
+        title
+        description
+        image
+        bookId
+        authors
+      }
     }
   }
 `;

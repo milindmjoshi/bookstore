@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {useQuery, useMutation} from '@apollo/client';
-import { GET_ME } from '../utils/queries';
+import { GET_ME , QUERY_USER } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
 import {
@@ -17,16 +17,26 @@ import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({});
-
+  
+  //const [userData, setUserData] = useState({});
+  let userData;
   // use this to determine if `useEffect()` hook needs to run again
   //const userDataLength = Object.keys(userData).length;
-
   console.log("Calling get me");
-  const { loading, data } = useQuery(GET_ME);
-        //const response = await getMe(token);
-  console.log("Data:" + JSON.stringify(data));
-  setUserData(data.me.user);
+   
+    
+    const { loading, data } = useQuery(GET_ME); 
+    if (data){
+      console.log("Data:" + JSON.stringify(data));
+      console.log("data1 user: " + JSON.stringify(data.me));
+      userData = data.me;
+      console.log("User Data: " + JSON.stringify(userData));
+    }
+    else{
+      console.log("No Data yet");
+      console.log(loading);
+    }
+
   
 
   // useEffect(() => {
