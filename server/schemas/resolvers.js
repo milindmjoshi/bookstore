@@ -10,8 +10,10 @@ const resolvers = {
     },
 
     me: async(parent, args, context)=>{
+      console.log("In get me: " );
       if (context.user){
-        return User.findOne({username: context.username})
+        console.log("In get me, for user: " + context.user.username);
+        return User.findOne({username: context.user.username})
       }
       throw AuthenticationError;
     },

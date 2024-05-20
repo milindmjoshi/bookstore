@@ -18,7 +18,7 @@ export const QUERY_USER = gql`
 
 export const GET_ME = gql`
   query me {
-    user {
+    me {
       username
       email
       password

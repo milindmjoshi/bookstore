@@ -90,11 +90,13 @@ const SearchBooks = () => {
     try {
       //const response = await saveBook(bookToSave, token);
       // Pass variables to mutation as vairables object
+      const profile = Auth.getProfile();
+      console.log("Profile data: " + JSON.stringify(profile));
       const {data} = await saveBook({
-        variables: {bookToSave}
+        variables: {username: profile.data.username, ...bookToSave}
       })
 
-      console.log(data);
+      console.log(JSON.stringify(data));
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);

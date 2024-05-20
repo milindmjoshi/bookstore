@@ -8,9 +8,14 @@ const expiration = '2h';
 module.exports = {
   // function for our authenticated routes
   authMiddleware: function ({req}) {
-    // allows token to be sent via  req.query  
-    console.log("Query: " + JSON.stringify(req.query));
-    let token = req.query.token 
+    // allows token to be sent via req.body, req.query, or headers
+    let token = req.body.token || req.query.token || req.headers.authorization;
+
+    // We split the token string into an array and return actual token
+    if (req.headers.authorization) {
+      token = token.split(' ').pop().trim();
+    }
+    console.log("In authMiddleware, token is: " + token);
 
 
     if (!token) {

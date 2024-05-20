@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import {useQuery, useMutation} from '@apollo/client';
 import { GET_ME } from '../utils/queries';
@@ -22,10 +22,11 @@ const SavedBooks = () => {
   // use this to determine if `useEffect()` hook needs to run again
   //const userDataLength = Object.keys(userData).length;
 
+  console.log("Calling get me");
   const { loading, data } = useQuery(GET_ME);
         //const response = await getMe(token);
-  console.log(data);
-  setUserData(data.user);
+  console.log("Data:" + JSON.stringify(data));
+  setUserData(data.me.user);
   
 
   // useEffect(() => {
