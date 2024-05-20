@@ -2,8 +2,12 @@
 import { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { loginUser } from '../utils/API';
+//import { loginUser } from '../utils/API';
 import Auth from '../utils/auth';
+
+import {useMutation} from '@apollo/client';
+
+import { LOGIN_USER } from '../utils/mutations';
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
@@ -15,7 +19,13 @@ const LoginForm = () => {
     setUserFormData({ ...userFormData, [name]: value });
   };
 
+   // Important for useMutation: We pass the mutation we'd like to execute to the useMutation hook
+  // The useMutation hook returns an array. The function at index 0 can be dispatched within the component to trigger the mutation query
+  // The object at index 1 contains information, such as the error boolean, which we use in this application
+  const [loginUser, { error }] = useMutation(LOGIN_USER);
+
   const handleFormSubmit = async (event) => {
+    console.log("Form is submitted");
     event.preventDefault();
 
     // check if form has everything (as per react-bootstrap docs)
@@ -26,17 +36,17 @@ const LoginForm = () => {
     }
 
     try {
-      const response = await loginUser(userFormData);
+      console.log("Logging in user");
+      const {data} = await loginUser({
+        variables: { email: userFormData.email, password: userFormData.password },
+      });
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
+      console.log("Token is newest " + JSON.stringify(data));
+      Auth.login(data.login.token);
     } catch (err) {
-      console.error(err);
+      console.error("Error logging in: " + err);
+      //console.log(err.networkError.result.errors);
+      console.log("Error again:" + JSON.stringify(err, null, 2));
       setShowAlert(true);
     }
 

@@ -1,4 +1,9 @@
 import { useState, useEffect } from 'react';
+
+import {useQuery, useMutation} from '@apollo/client';
+import { GET_ME } from '../utils/queries';
+import { REMOVE_BOOK } from '../utils/mutations';
+
 import {
   Container,
   Card,
@@ -7,7 +12,7 @@ import {
   Col
 } from 'react-bootstrap';
 
-import { getMe, deleteBook } from '../utils/API';
+//import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
@@ -15,33 +20,40 @@ const SavedBooks = () => {
   const [userData, setUserData] = useState({});
 
   // use this to determine if `useEffect()` hook needs to run again
-  const userDataLength = Object.keys(userData).length;
+  //const userDataLength = Object.keys(userData).length;
 
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const token = Auth.loggedIn() ? Auth.getToken() : null;
+  const { loading, data } = useQuery(GET_ME);
+        //const response = await getMe(token);
+  console.log(data);
+  setUserData(data.user);
+  
 
-        if (!token) {
-          return false;
-        }
+  // useEffect(() => {
+  //   const getUserData = async () => {
+  //     try {
+  //       const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-        const response = await getMe(token);
+  //       if (!token) {
+  //         return false;
+  //       }
 
-        if (!response.ok) {
-          throw new Error('something went wrong!');
-        }
+  //       const { data } = useQuery(GET_ME);
+  //       //const response = await getMe(token);
+  //       console.log(data);
+         
+  //       setUserData(data.user);
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
 
-        const user = await response.json();
-        setUserData(user);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+  //   getUserData();
+  // }, [userDataLength]);
 
-    getUserData();
-  }, [userDataLength]);
-
+  // Important for useMutation: We pass the mutation we'd like to execute to the useMutation hook
+  // The useMutation hook returns an array. The function at index 0 can be dispatched within the component to trigger the mutation query
+  // The object at index 1 contains information, such as the error boolean, which we use in this application
+  const [removeBook, { error }] = useMutation(REMOVE_BOOK);
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -51,14 +63,11 @@ const SavedBooks = () => {
     }
 
     try {
-      const response = await deleteBook(bookId, token);
+      const {data} = await removeBook(bookId, token);
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      console.log(data);
 
-      const updatedUser = await response.json();
-      setUserData(updatedUser);
+      setUserData(data.user);
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
@@ -67,7 +76,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
 

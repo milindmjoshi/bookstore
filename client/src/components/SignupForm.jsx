@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API';
+//import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
+
+import {useMutation} from '@apollo/client';
+
+import { ADD_USER } from '../utils/mutations';
 
 const SignupForm = () => {
   // set initial form state
@@ -17,6 +21,11 @@ const SignupForm = () => {
     setUserFormData({ ...userFormData, [name]: value });
   };
 
+   // Important for useMutation: We pass the mutation we'd like to execute to the useMutation hook
+  // The useMutation hook returns an array. The function at index 0 can be dispatched within the component to trigger the mutation query
+  // The object at index 1 contains information, such as the error boolean, which we use in this application
+  const [addUser, { error }] = useMutation(ADD_USER);
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -27,16 +36,15 @@ const SignupForm = () => {
       event.stopPropagation();
     }
 
+   
     try {
-      const response = await createUser(userFormData);
+      const {data} = await addUser(userFormData);
+      console.log(data);
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
+       
+      console.log(data.user);
+      console.log(data.token);
+      Auth.login(data.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);

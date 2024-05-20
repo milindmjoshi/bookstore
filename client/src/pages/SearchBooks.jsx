@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 // Import useMutation hook
 import {useMutation} from '@apollo/client';
 
-import { SAVE_BOOK } from '../../utils/mutations';
+import { SAVE_BOOK } from '../utils/mutations';
 
 
 import {
@@ -73,13 +73,17 @@ const SearchBooks = () => {
 
   // create function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
+    console.log("Saving Book...");
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
+    console.log("book to save: " + JSON.stringify(bookToSave));
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
+    console.log(token);
 
     if (!token) {
+      console.log("No token, can't save");
       return false;
     }
 
@@ -96,6 +100,9 @@ const SearchBooks = () => {
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
       console.error(err);
+      console.error("Error Saving Book: " + err);
+      //console.log(err.networkError.result.errors);
+      console.log("Error Details:" + JSON.stringify(err, null, 2));
     }
   };
 

@@ -16,6 +16,16 @@ export const QUERY_USER = gql`
   }
 `;
 
+export const GET_ME = gql`
+  query me {
+    user {
+      username
+      email
+      password
+    }
+  }
+`;
+
 export const QUERY_SINGLE_USER = gql`
   query getSingleUser($username: String!) {
     user(username: $username) {
