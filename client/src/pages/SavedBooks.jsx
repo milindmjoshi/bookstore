@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+//import { useState, useEffect } from 'react';
 
 import {useQuery, useMutation} from '@apollo/client';
-import { GET_ME , QUERY_USER } from '../utils/queries';
+import { GET_ME  } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
 
 import {
@@ -70,15 +70,21 @@ const SavedBooks = () => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
+      console.log("Removing book failed, not logged in");
       return false;
     }
 
     try {
-      const {data} = await removeBook(bookId, token);
+      console.log("Removing book");
+      console.log("User is: " + Auth.getProfile().data.username);
+      console.log("Book Id is: " + bookId);
+      const {data} = await removeBook({
+        variables: {username: Auth.getProfile().data.username, bookId: bookId},
+      });
 
-      console.log(data);
+      console.log("Data: " + JSON.stringify(data));
 
-      setUserData(data.user);
+      userData = data.me;
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
