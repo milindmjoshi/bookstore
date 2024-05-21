@@ -30,11 +30,13 @@ const resolvers = {
   },
   // Important for useMutation: The resolver matches the typeDefs entry point and informs the request of the relevant data
   Mutation: {
+    // Add user
     addUser: async (parent, { username, email, password }) => {
       const user = User.create({ username, email, password });
       const token = signToken(user);
       return {token, user}
     },
+    // Login
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
 
@@ -51,6 +53,7 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
+    // Save book to user collection
     saveBook: async (parent, { username, bookId, title, description, authors, image }) => {
       return User.findOneAndUpdate(
         { username: username },
@@ -63,6 +66,7 @@ const resolvers = {
         }
       );
     },
+    // Remove book from user collection
     removeBook: async (parent, { username, bookId }) => {
       return User.findOneAndUpdate(
         { username: username },
