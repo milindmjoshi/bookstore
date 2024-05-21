@@ -32,34 +32,6 @@ const SavedBooks = () => {
       userData = data.me;
       console.log("User Data: " + JSON.stringify(userData));
     }
-    else{
-      console.log("No Data yet");
-      console.log(loading);
-    }
-
-  
-
-  // useEffect(() => {
-  //   const getUserData = async () => {
-  //     try {
-  //       const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-  //       if (!token) {
-  //         return false;
-  //       }
-
-  //       const { data } = useQuery(GET_ME);
-  //       //const response = await getMe(token);
-  //       console.log(data);
-         
-  //       setUserData(data.user);
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   };
-
-  //   getUserData();
-  // }, [userDataLength]);
 
   // Important for useMutation: We pass the mutation we'd like to execute to the useMutation hook
   // The useMutation hook returns an array. The function at index 0 can be dispatched within the component to trigger the mutation query
@@ -87,6 +59,7 @@ const SavedBooks = () => {
       userData = data.me;
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
+      window.location.reload();
     } catch (err) {
       console.error(err);
     }
