@@ -13,7 +13,7 @@
 
 ## Description
 A MERN application to allow searching for books and adding them to saved books list
-![Screenshot](https://github.com/milindmjoshi/bookstore/bookstore.png)
+![Screenshot](https://github.com/milindmjoshi/bookstore/blob/main/bookstore.png)
 
 
 ## Usage
